@@ -1,0 +1,13 @@
+jaffle_shop:
+  outputs:
+    dev:
+      account: YDUTKID-VZ50672
+      database: SNOWFLAKE_LEARNING_DB
+      password: "{{ env_var('SNOWFLAKE_PASSWORD') }}"
+      role: ACCOUNTADMIN
+      schema: DUMMY
+      threads: 2
+      type: snowflake
+      user: deepakreddyyv4
+      warehouse: SNOWFLAKE_LEARNING_WH
+  target: dev

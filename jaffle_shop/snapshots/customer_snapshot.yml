@@ -1,0 +1,13 @@
+snapshots:
+  - name: customer_snap
+    relation: ref('customer')
+    config:
+      schema: dwh_turing_dbt
+      database: SNOWFLAKE_LEARNING_DB
+      unique_key: customer_id
+      strategy: check
+      check_cols: ['first_name', 'last_name', 'FIRST_ORDER_DATE', 'NUMBER_OF_ORDERS']
+      hard_deletes: invalidate
+      valid_from: valid_from
+      valid_to: valid_to 
+      dbc_scd_id: scd_id 

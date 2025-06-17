@@ -1,0 +1,56 @@
+
+      
+  
+    
+
+create or replace transient table SNOWFLAKE_LEARNING_DB.dhw_turing_dbt.customers_snapshot
+    
+
+    
+    as (
+    
+
+    select *,
+        md5(coalesce(cast(customer_id as varchar ), '')
+         || '|' || coalesce(cast(to_timestamp_ntz(convert_timezone('UTC', current_timestamp())) as varchar ), '')
+        ) as dbt_scd_id,
+        to_timestamp_ntz(convert_timezone('UTC', current_timestamp())) as dbt_updated_at,
+        to_timestamp_ntz(convert_timezone('UTC', current_timestamp())) as dbt_valid_from,
+        
+  
+  coalesce(nullif(to_timestamp_ntz(convert_timezone('UTC', current_timestamp())), to_timestamp_ntz(convert_timezone('UTC', current_timestamp()))), null)
+  as dbt_valid_to
+from (
+        
+
+
+
+select * from SNOWFLAKE_LEARNING_DB.rsv_turing_dbt.customers
+
+    ) sbq
+
+
+
+    )
+;
+
+
+
+{% snapshot customers_snapshot %}
+
+{{
+    config(
+      target_schema='dhw_turing_dbt',
+      unique_key='customer_id',
+      strategy='check',
+      check_cols=['first_name', 'last_name', 'FIRST_ORDER_DATE', 'NUMBER_OF_ORDERS'],
+      invalidate_hard_deletes=True
+    )
+}}
+
+select * from {{ ref('customers') }}
+
+{% endsnapshot %}
+
+  
+  
